@@ -1,0 +1,464 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DailyCloudWatchLogsArchiveStack Testing Snapshot Testing should match snapshot: archiver 1`] = `
+{
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "DailyCloudWatchLogsArchiverLambdaExecutionRoleB287F490": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "daily CloudWatch Logs archive lambda exec role.",
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicDurableExecutionRolePolicy",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DailyCloudWatchLogsArchiverLambdaExecutionRoleDefaultPolicy82788427": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetBucketAcl",
+                "s3:PutObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+              "Sid": "LogArchiveBucketAccess",
+            },
+            {
+              "Action": "tag:GetResources",
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "ResourceGroupsTaggingGetResources",
+            },
+            {
+              "Action": [
+                "logs:CreateExportTask",
+                "logs:DescribeExportTasks",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "CloudWatchLogsExport",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "DailyCloudWatchLogsArchiverLambdaExecutionRoleDefaultPolicy82788427",
+        "Roles": [
+          {
+            "Ref": "DailyCloudWatchLogsArchiverLambdaExecutionRoleB287F490",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "DailyCloudWatchLogsArchiverLambdaFunctionLogGroupF3ACBF01": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "RetentionInDays": 90,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DailyCloudWatchLogsArchiverLogArchiveBucket88461686": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AccessControl": "Private",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "archive-step-lifecycle-rule",
+              "Status": "Enabled",
+              "Transitions": [
+                {
+                  "StorageClass": "STANDARD_IA",
+                  "TransitionInDays": 400,
+                },
+                {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 720,
+                },
+                {
+                  "StorageClass": "DEEP_ARCHIVE",
+                  "TransitionInDays": 980,
+                },
+              ],
+            },
+          ],
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerEnforced",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "DailyCloudWatchLogsArchiverLogArchiveBucketPolicy098686E8": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:GetBucketAcl",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "logs.us-east-1.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "s3:PutObject",
+              "Condition": {
+                "StringEquals": {
+                  "s3:x-amz-acl": "bucket-owner-full-control",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "logs.us-east-1.amazonaws.com",
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "DailyCloudWatchLogsArchiverLogArchiveFunction1589C8E4": {
+      "DependsOn": [
+        "DailyCloudWatchLogsArchiverLambdaExecutionRoleDefaultPolicy82788427",
+        "DailyCloudWatchLogsArchiverLambdaExecutionRoleB287F490",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "HASH.zip",
+        },
+        "Description": "A function to archive logs s3 bucket from CloudWatch Logs.",
+        "DurableConfig": {
+          "ExecutionTimeout": 7200,
+          "RetentionPeriodInDays": 1,
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "BUCKET_NAME": {
+              "Ref": "DailyCloudWatchLogsArchiverLogArchiveBucket88461686",
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "LoggingConfig": {
+          "ApplicationLogLevel": "INFO",
+          "LogFormat": "JSON",
+          "LogGroup": {
+            "Ref": "DailyCloudWatchLogsArchiverLambdaFunctionLogGroupF3ACBF01",
+          },
+          "SystemLogLevel": "INFO",
+        },
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "DailyCloudWatchLogsArchiverLambdaExecutionRoleB287F490",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "DailyCloudWatchLogsArchiverLogArchiveFunctionAlias1184211A": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DailyCloudWatchLogsArchiverLogArchiveFunction1589C8E4",
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486f12a040d15fbdb18fb8d2065013ac44e",
+            "Version",
+          ],
+        },
+        "Name": "live",
+      },
+      "Type": "AWS::Lambda::Alias",
+    },
+    "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486f12a040d15fbdb18fb8d2065013ac44e": {
+      "Metadata": {
+        "aws:cdk:do-not-refactor": true,
+      },
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DailyCloudWatchLogsArchiverLogArchiveFunction1589C8E4",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
+    },
+    "DailyCloudWatchLogsArchiverLogArchiveFunctionEventInvokeConfig52CE8D45": {
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DailyCloudWatchLogsArchiverLogArchiveFunction1589C8E4",
+        },
+        "MaximumRetryAttempts": 2,
+        "Qualifier": "$LATEST",
+      },
+      "Type": "AWS::Lambda::EventInvokeConfig",
+    },
+    "DailyCloudWatchLogsArchiverLogArchiveScheduleB17ADD03": {
+      "Properties": {
+        "Description": "daily CloudWatch Logs archive schedule",
+        "FlexibleTimeWindow": {
+          "Mode": "OFF",
+        },
+        "ScheduleExpression": "cron(1 13 * * ? *)",
+        "ScheduleExpressionTimezone": "Etc/UTC",
+        "State": "ENABLED",
+        "Target": {
+          "Arn": {
+            "Ref": "DailyCloudWatchLogsArchiverLogArchiveFunctionAlias1184211A",
+          },
+          "Input": "{"tagKey":"DailyLogExport","tagValues":["Yes"]}",
+          "RetryPolicy": {
+            "MaximumEventAgeInSeconds": 86400,
+            "MaximumRetryAttempts": 185,
+          },
+          "RoleArn": {
+            "Fn::GetAtt": [
+              "SchedulerRoleForTarget6c8c3a74539F82",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::Scheduler::Schedule",
+    },
+    "SchedulerRoleForTarget6c8c3a74539F82": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceAccount": "123456789012",
+                  "aws:SourceArn": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        "arn:",
+                        {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":scheduler:us-east-1:123456789012:schedule-group/default",
+                      ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "scheduler.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SchedulerRoleForTarget6c8c3aDefaultPolicyE34F1522": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "DailyCloudWatchLogsArchiverLogArchiveFunctionAlias1184211A",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SchedulerRoleForTarget6c8c3aDefaultPolicyE34F1522",
+        "Roles": [
+          {
+            "Ref": "SchedulerRoleForTarget6c8c3a74539F82",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
