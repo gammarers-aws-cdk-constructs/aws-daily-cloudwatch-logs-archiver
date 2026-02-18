@@ -45,6 +45,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     },
   },
   releaseToNpm: true,
+  npmTrustedPublishing: true,
   npmAccess: javascript.NpmAccess.PUBLIC,
   minNodeVersion: '20.0.0',
   workflowNodeVersion: '24.x',
