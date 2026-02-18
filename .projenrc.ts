@@ -1,4 +1,4 @@
-import { awscdk, javascript } from 'projen';
+import { awscdk, javascript, github } from 'projen';
 const project = new awscdk.AwsCdkConstructLibrary({
   author: 'yicr',
   authorAddress: 'yicr@users.noreply.github.com',
@@ -44,7 +44,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
       sourcemap: true,
     },
   },
-  releaseToNpm: false,
+  releaseToNpm: true,
   npmAccess: javascript.NpmAccess.PUBLIC,
   minNodeVersion: '20.0.0',
   workflowNodeVersion: '24.x',
@@ -54,8 +54,19 @@ const project = new awscdk.AwsCdkConstructLibrary({
       schedule: javascript.UpgradeDependenciesSchedule.NEVER,
     },
   },
+  githubOptions: {
+    projenCredentials: github.GithubCredentials.fromApp({
+      permissions: {
+        pullRequests: github.workflows.AppPermission.WRITE,
+        contents: github.workflows.AppPermission.WRITE,
+      },
+    }),
+  },
   autoApproveOptions: {
-    allowedUsernames: ['yicr'],
+    allowedUsernames: [
+      'gammarers-projen-upgrade-bot[bot]',
+      'yicr',
+    ],
   },
   // publishToPypi: {
   //   distName: 'gammarers.aws-daily-cloud-watch-logs-archive-stack',
