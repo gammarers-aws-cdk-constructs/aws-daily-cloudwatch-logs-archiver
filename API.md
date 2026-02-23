@@ -54,6 +54,7 @@ Configuration for target log groups (tag key/values) and optional overrides.
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiver.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiver.with">with</a></code> | Applies one or more mixins to this construct. |
 
 ---
 
@@ -64,6 +65,27 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
+
+##### `with` <a name="with" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiver.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiver.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -177,6 +199,7 @@ Stack props including targetResourceTag for log group selection.
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.with">with</a></code> | Applies one or more mixins to this construct. |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.addDependency">addDependency</a></code> | Add a dependency between this stack and another stack. |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.addMetadata">addMetadata</a></code> | Adds an arbitrary key-value pair, with information you want to record about the stack. |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.addStackTag">addStackTag</a></code> | Configure a stack tag. |
@@ -203,6 +226,27 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
+
+##### `with` <a name="with" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
 
 ##### `addDependency` <a name="addDependency" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.addDependency"></a>
 
