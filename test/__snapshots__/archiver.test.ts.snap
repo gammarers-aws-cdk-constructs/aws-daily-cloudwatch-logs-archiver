@@ -318,7 +318,7 @@ exports[`DailyCloudWatchLogsArchiveStack Testing Snapshot Testing should match s
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486f12a040d15fbdb18fb8d2065013ac44e",
+            "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486a44c9a5a81eee26d83d6277be9f64888",
             "Version",
           ],
         },
@@ -326,7 +326,7 @@ exports[`DailyCloudWatchLogsArchiveStack Testing Snapshot Testing should match s
       },
       "Type": "AWS::Lambda::Alias",
     },
-    "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486f12a040d15fbdb18fb8d2065013ac44e": {
+    "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486a44c9a5a81eee26d83d6277be9f64888": {
       "Metadata": {
         "aws:cdk:do-not-refactor": true,
       },
