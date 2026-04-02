@@ -11,6 +11,8 @@ import {
   GetResourcesCommand,
   ResourceGroupsTaggingAPIClient,
 } from '@aws-sdk/client-resource-groups-tagging-api';
+import { secretFetcher } from 'aws-lambda-secret-fetcher';
+import { SafeEnvGetter } from 'safe-env-getter';
 
 /**
  * Error thrown when a required environment variable is not set.

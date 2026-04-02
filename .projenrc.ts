@@ -23,6 +23,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
     '@gammarers/jest-aws-cdk-asset-filename-renamer@~0.5.8',
     'aws-sdk-client-mock@^3',
     'aws-sdk-client-mock-jest@^3',
+    'safe-env-getter@^0.1',
   ],
   jestOptions: {
     jestConfig: {

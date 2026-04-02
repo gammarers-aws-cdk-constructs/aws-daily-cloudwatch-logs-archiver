@@ -118,6 +118,11 @@
       "type": "build"
     },
     {
+      "name": "safe-env-getter",
+      "version": "^0.1",
+      "type": "build"
+    },
+    {
       "name": "ts-jest",
       "type": "build"
     },
