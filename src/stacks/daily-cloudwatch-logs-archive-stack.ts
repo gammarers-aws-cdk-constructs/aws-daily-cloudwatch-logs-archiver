@@ -1,6 +1,6 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { DailyCloudWatchLogsArchiver, TargetResourceTagProperty } from '../constructs/daily-cloudwatch-logs-archiver';
+import { DailyCloudWatchLogsArchiver, type TargetResource } from '../constructs/daily-cloudwatch-logs-archiver';
 
 /**
  * Props for the DailyCloudWatchLogsArchiveStack.
@@ -8,7 +8,7 @@ import { DailyCloudWatchLogsArchiver, TargetResourceTagProperty } from '../const
  */
 export interface DailyCloudWatchLogsArchiveStackProps extends StackProps {
   /** Tag key and values used to select CloudWatch Log groups for daily archiving. */
-  readonly targetResourceTag: TargetResourceTagProperty;
+  readonly targetResource: TargetResource;
 }
 
 /**
@@ -21,13 +21,13 @@ export class DailyCloudWatchLogsArchiveStack extends Stack {
    *
    * @param scope - Parent construct (e.g. App).
    * @param id - Stack ID.
-   * @param props - Stack props including targetResourceTag for log group selection.
+   * @param props - Stack props including targetResource for log group selection.
    */
   constructor(scope: Construct, id: string, props: DailyCloudWatchLogsArchiveStackProps) {
     super(scope, id, props);
 
     new DailyCloudWatchLogsArchiver(this, 'DailyCloudWatchLogsArchiver', {
-      targetResourceTag: props.targetResourceTag,
+      targetResource: props.targetResource,
     });
   }
 }
