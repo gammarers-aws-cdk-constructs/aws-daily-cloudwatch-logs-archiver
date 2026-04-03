@@ -318,7 +318,7 @@ exports[`DailyCloudWatchLogsArchiveStack Testing Snapshot Testing should match s
         },
         "FunctionVersion": {
           "Fn::GetAtt": [
-            "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486a44c9a5a81eee26d83d6277be9f64888",
+            "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion458344866c76905cfd512bde0431559c5c9c9209",
             "Version",
           ],
         },
@@ -326,7 +326,7 @@ exports[`DailyCloudWatchLogsArchiveStack Testing Snapshot Testing should match s
       },
       "Type": "AWS::Lambda::Alias",
     },
-    "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion45834486a44c9a5a81eee26d83d6277be9f64888": {
+    "DailyCloudWatchLogsArchiverLogArchiveFunctionCurrentVersion458344866c76905cfd512bde0431559c5c9c9209": {
       "Metadata": {
         "aws:cdk:do-not-refactor": true,
       },
@@ -360,7 +360,7 @@ exports[`DailyCloudWatchLogsArchiveStack Testing Snapshot Testing should match s
           "Arn": {
             "Ref": "DailyCloudWatchLogsArchiverLogArchiveFunctionAlias1184211A",
           },
-          "Input": "{"tagKey":"DailyLogExport","tagValues":["Yes"]}",
+          "Input": "{"Params":{"TagKey":"DailyLogExport","TagValues":["Yes"]}}",
           "RetryPolicy": {
             "MaximumEventAgeInSeconds": 86400,
             "MaximumRetryAttempts": 185,

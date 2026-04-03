@@ -11,63 +11,17 @@ import {
   GetResourcesCommand,
   ResourceGroupsTaggingAPIClient,
 } from '@aws-sdk/client-resource-groups-tagging-api';
-
-/**
- * Error thrown when a required environment variable is not set.
- */
-export class EnvironmentVariableError extends Error {
-  /**
-   * @param message - Error message describing the missing variable.
-   */
-  constructor(message: string) {
-    super(message);
-    this.name = 'EnvironmentVariableError';
-  }
-}
-
-/**
- * Error thrown when the event input is invalid or missing required fields.
- */
-export class InputVariableError extends Error {
-  /**
-   * @param message - Error message describing the input validation failure.
-   */
-  constructor(message: string) {
-    super(message);
-    this.name = 'InputVariableError';
-  }
-}
+import { SafeEnvGetter } from 'safe-env-getter';
 
 /**
  * Input from EventBridge Scheduler: specifies target log groups by tag key and values.
  */
-export interface SchedulerEventInput {
-  /** Tag key used to filter CloudWatch Log groups (e.g. "Environment"). */
-  readonly tagKey: string;
-  /** Tag values to match; log groups with any of these values are archived. */
-  readonly tagValues: string[];
+interface ScheduleEvent {
+  Params: {
+    TagKey: string;
+    TagValues: string[];
+  };
 }
-
-/**
- * Legacy single log group input (backward compatibility).
- */
-export interface SingleLogGroupEventInput {
-  /** Name of the single log group to export. */
-  readonly TargetLogGroupName?: string;
-}
-
-/**
- * Union of supported event input types: tag-based (scheduler) or single log group name.
- */
-export type EventInput = SchedulerEventInput | SingleLogGroupEventInput;
-
-/**
- * Type guard: returns true if the event is scheduler-style input (tagKey + tagValues).
- * @param event - The event payload to check.
- * @returns True if event has tagKey and tagValues.
- */
-const isSchedulerInput = (event: EventInput): event is SchedulerEventInput =>
-  'tagKey' in event && 'tagValues' in event && Array.isArray((event as SchedulerEventInput).tagValues);
 
 /**
  * Extracts the log group name from a CloudWatch Logs resource ARN.
@@ -167,46 +121,38 @@ const createExportLogGroup = async (
  * @throws EnvironmentVariableError if BUCKET_NAME is not set.
  * @throws InputVariableError if event is invalid or missing required fields.
  */
-export const handler = withDurableExecution(async (event: EventInput, context: DurableContext): Promise<{ ExportedCount: number }> => {
+export const handler = withDurableExecution(async (event: ScheduleEvent, context: DurableContext): Promise<{ ExportedCount: number }> => {
   context.logger.info('Log archiver started', { hasTagKey: 'tagKey' in event });
 
-  if (!process.env.BUCKET_NAME) {
-    throw new EnvironmentVariableError('BUCKET_NAME environment variable not set.');
-  }
-  const bucketName = process.env.BUCKET_NAME;
+  // safe get Secrets name from environment variable
+  const bucketName = SafeEnvGetter.getEnv('BUCKET_NAME');
 
   const cwLogs = new CloudWatchLogsClient({});
   let logGroupNames: string[];
 
-  if (isSchedulerInput(event)) {
-    if (!event.tagKey || event.tagValues.length === 0) {
-      throw new InputVariableError('event must have tagKey and non-empty tagValues when using scheduler input.');
-    }
-    logGroupNames = await context.step('get-resources', async () => {
-      const taggingClient = new ResourceGroupsTaggingAPIClient({});
-      const arns: string[] = [];
-      let paginationToken: string | undefined;
-      do {
-        const result = await taggingClient.send(new GetResourcesCommand({
-          ResourceTypeFilters: ['logs:log-group'],
-          TagFilters: [{ Key: event.tagKey, Values: event.tagValues }],
-          PaginationToken: paginationToken,
-        }));
-        const list = result.ResourceTagMappingList ?? [];
-        for (const m of list) {
-          if (m.ResourceARN) arns.push(m.ResourceARN);
-        }
-        paginationToken = result.PaginationToken ?? undefined;
-      } while (paginationToken);
-      return arns.map(getLogGroupNameFromArn);
-    });
-    context.logger.info('Resolved log groups', { count: logGroupNames.length, tagKey: event.tagKey });
-  } else {
-    if (!event.TargetLogGroupName) {
-      throw new InputVariableError('event input TargetLogGroupName (or tagKey/tagValues) not set.');
-    }
-    logGroupNames = [event.TargetLogGroupName];
+  const params = event.Params;
+  if (!params?.TagKey || !params?.TagValues) {
+    throw new Error('Invalid event: Params.TagKey, Params.TagValues, Params.Mode are required.');
   }
+  logGroupNames = await context.step('get-resources', async () => {
+    const taggingClient = new ResourceGroupsTaggingAPIClient({});
+    const arns: string[] = [];
+    let paginationToken: string | undefined;
+    do {
+      const result = await taggingClient.send(new GetResourcesCommand({
+        ResourceTypeFilters: ['logs:log-group'],
+        TagFilters: [{ Key: params.TagKey, Values: params.TagValues }],
+        PaginationToken: paginationToken,
+      }));
+      const list = result.ResourceTagMappingList ?? [];
+      for (const m of list) {
+        if (m.ResourceARN) arns.push(m.ResourceARN);
+      }
+      paginationToken = result.PaginationToken ?? undefined;
+    } while (paginationToken);
+    return arns.map(getLogGroupNameFromArn);
+  });
+  context.logger.info('Resolved log groups', { count: logGroupNames.length, tagKey: params.TagKey });
 
   const mapResult = await context.map(
     'export-log-groups',
