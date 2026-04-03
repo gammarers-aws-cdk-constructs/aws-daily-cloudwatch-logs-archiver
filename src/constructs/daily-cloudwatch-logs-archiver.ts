@@ -13,11 +13,11 @@ import { LogArchiveFunction } from '../funcs/log-archive-function';
  * Tag filter used to select CloudWatch Log groups for archiving.
  * Log groups matching the given tag key and any of the values will be archived.
  */
-export interface TargetResourceTagProperty {
-  /** Tag key to filter log groups (e.g. "Environment", "Project"). */
-  readonly key: string;
-  /** Tag values to match (log groups with any of these values are included). */
-  readonly values: string[];
+export interface TargetResource {
+  /** Tag key used for resource discovery. */
+  readonly tagKey: string;
+  /** Tag values matched by the scheduler target query. */
+  readonly tagValues: string[];
 }
 
 /**
@@ -25,7 +25,7 @@ export interface TargetResourceTagProperty {
  */
 export interface DailyCloudWatchLogsArchiverProps {
   /** Tag filter to identify which log groups to archive daily. */
-  readonly targetResourceTag: TargetResourceTagProperty;
+  readonly targetResource: TargetResource;
 }
 
 /**
@@ -156,8 +156,10 @@ export class DailyCloudWatchLogsArchiver extends Construct {
       }),
       target: new targets.LambdaInvoke(logArchiveFunctionAlias, {
         input: scheduler.ScheduleTargetInput.fromObject({
-          tagKey: props.targetResourceTag.key,
-          tagValues: props.targetResourceTag.values,
+          Params: {
+            TagKey: props.targetResource.tagKey,
+            TagValues: props.targetResource.tagValues,
+          },
         }),
       }),
     });
