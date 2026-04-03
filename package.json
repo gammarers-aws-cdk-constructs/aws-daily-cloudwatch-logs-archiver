@@ -1,6 +1,6 @@
 {
   "name": "aws-daily-cloudwatch-logs-archiver",
-  "description": "AWS CloudWatch Logs daily archive to s3 bucket",
+  "description": "An AWS CDK construct that archives CloudWatch Logs to S3 every day. Log groups are selected by resource tags; the previous calendar day's logs are exported to a secure S3 bucket on a fixed schedule (13:01 UTC).",
   "repository": {
     "type": "git",
     "url": "https://github.com/gammarers-aws-cdk-constructs/aws-daily-cloudwatch-logs-archiver.git"
@@ -83,7 +83,9 @@
     "aws-cdk",
     "bucket",
     "cdk",
+    "cloudwatch",
     "lambda",
+    "logs",
     "s3",
     "scheduler"
   ],

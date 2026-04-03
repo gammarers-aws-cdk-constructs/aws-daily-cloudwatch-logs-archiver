@@ -9,8 +9,8 @@ const project = new awscdk.AwsCdkConstructLibrary({
   name: 'aws-daily-cloudwatch-logs-archiver',
   projenrcTs: true,
   repositoryUrl: 'https://github.com/gammarers-aws-cdk-constructs/aws-daily-cloudwatch-logs-archiver.git',
-  description: 'AWS CloudWatch Logs daily archive to s3 bucket',
-  keywords: ['aws', 'cdk', 'aws-cdk', 'scheduler', 's3', 'bucket', 'archive', 'lambda'],
+  description: 'An AWS CDK construct that archives CloudWatch Logs to S3 every day. Log groups are selected by resource tags; the previous calendar day\'s logs are exported to a secure S3 bucket on a fixed schedule (13:01 UTC).',
+  keywords: ['aws', 'cdk', 'aws-cdk', 'scheduler', 's3', 'bucket', 'archive', 'lambda', 'cloudwatch', 'logs'],
   majorVersion: 3,
   deps: [
     '@gammarers/aws-secure-log-bucket@^2.1.19',
