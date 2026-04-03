@@ -10,9 +10,9 @@ describe('DailyCloudWatchLogsArchiveStack Testing', () => {
       account: '123456789012',
       region: 'us-east-1',
     },
-    targetResourceTag: {
-      key: 'DailyLogExport',
-      values: ['Yes'],
+    targetResource: {
+      tagKey: 'DailyLogExport',
+      tagValues: ['Yes'],
     },
   });
 
@@ -199,7 +199,7 @@ describe('DailyCloudWatchLogsArchiveStack Testing', () => {
         ScheduleExpression: 'cron(1 13 * * ? *)',
         Target: Match.objectLike({
           Arn: { Ref: Match.stringLikeRegexp('LogArchiveFunctionAlias.*') },
-          Input: '{"tagKey":"DailyLogExport","tagValues":["Yes"]}',
+          Input: '{"Params":{"TagKey":"DailyLogExport","TagValues":["Yes"]}}',
           RoleArn: Match.anyValue(),
           RetryPolicy: Match.anyValue(),
         }),
