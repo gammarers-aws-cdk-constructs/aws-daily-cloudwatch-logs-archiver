@@ -20,7 +20,7 @@ An AWS CDK construct that archives CloudWatch Logs to S3 every day. Log groups a
 ## How it works
 
 - **Schedule**: EventBridge Scheduler runs once per day at **13:01 UTC**.
-- **Target selection**: The scheduler invokes a Lambda with a tag key and values. The Lambda uses the Resource Groups Tagging API to find all CloudWatch Log groups that have that tag, then exports each group.
+- **Target selection**: The scheduler invokes the Lambda with `Params.TagKey` and `Params.TagValues`. The Lambda uses the Resource Groups Tagging API to find all CloudWatch Log groups that match that tag filter, then exports each group.
 - **Durable Lambda**: The export logic runs inside a single Lambda using [AWS Durable Execution](https://docs.aws.amazon.com/lambda/latest/dg/durable-getting-started.html). The function creates export tasks, polls until they complete (with retries), and can run up to 2 hours so many log groups can be processed in one run.
 - **Export**: For each log group, a `CreateExportTask` is issued for the **previous calendar day** (00:00:00–23:59:59.999 UTC). Objects are written to S3 with the prefix `{logGroupName}/{YYYY}/{MM}/{DD}/`.
 
@@ -30,10 +30,10 @@ You tag the log groups you want to include (e.g. `DailyLogExport` = `Yes`); only
 
 - **S3 bucket** – Secure log bucket (from `@gammarers/aws-secure-log-bucket`) with a resource policy allowing CloudWatch Logs to deliver export data.
 - **Lambda function** – Durable execution, ARM64, 15-minute timeout per invocation, 2-hour durable execution limit. Writes to the bucket and uses the tagging API.
-- **Lambda execution role** – Basic + Durable Execution managed policies plus S3 permissions.
+- **Lambda execution role** – Basic + Durable Execution managed policies plus S3, `tag:GetResources`, and CloudWatch Logs export permissions.
 - **Lambda log group** – 3-month retention for the archiver's own logs.
 - **Lambda alias** – `live`, used as the scheduler target for versioned deployments.
-- **EventBridge Scheduler** – Cron schedule and target (Lambda invoke with `tagKey` and `tagValues` in the payload).
+- **EventBridge Scheduler** – Cron schedule and target (Lambda invoke with JSON input `{"Params":{"TagKey":"...","TagValues":["..."]}}`).
 
 ## Architecture
 
@@ -53,6 +53,12 @@ npm install aws-daily-cloudwatch-logs-archiver
 yarn add aws-daily-cloudwatch-logs-archiver
 ```
 
+**pnpm**
+
+```bash
+pnpm add aws-daily-cloudwatch-logs-archiver
+```
+
 ## Usage
 
 Use the construct inside your stack and pass the tag key and values used to select log groups. Only log groups that have this tag (with one of the given values) will be archived.
@@ -61,9 +67,9 @@ Use the construct inside your stack and pass the tag key and values used to sele
 import { DailyCloudWatchLogsArchiver } from 'aws-daily-cloudwatch-logs-archiver';
 
 new DailyCloudWatchLogsArchiver(this, 'DailyCloudWatchLogsArchiver', {
-  targetResourceTag: {
-    key: 'DailyLogExport',
-    values: ['Yes'],
+  targetResource: {
+    tagKey: 'DailyLogExport',
+    tagValues: ['Yes'],
   },
 });
 ```
@@ -74,9 +80,9 @@ Alternatively, use the dedicated stack that contains the construct:
 import { DailyCloudWatchLogsArchiveStack } from 'aws-daily-cloudwatch-logs-archiver';
 
 new DailyCloudWatchLogsArchiveStack(app, 'DailyCloudWatchLogsArchiveStack', {
-  targetResourceTag: {
-    key: 'DailyLogExport',
-    values: ['Yes'],
+  targetResource: {
+    tagKey: 'DailyLogExport',
+    tagValues: ['Yes'],
   },
 });
 ```
@@ -85,22 +91,32 @@ Ensure the CloudWatch Log groups you want to archive are tagged accordingly (e.g
 
 ## Options
 
+### `DailyCloudWatchLogsArchiver`
+
 | Option | Type | Description |
 |--------|------|-------------|
-| `targetResourceTag` | `TargetResourceTagProperty` | Tag filter to identify which log groups to archive daily. |
+| `targetResource` | `TargetResource` | Tag filter to identify which log groups to archive daily. |
 
-**TargetResourceTagProperty**
+### `DailyCloudWatchLogsArchiveStack`
+
+Inherits standard [`StackProps`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.StackProps.html) plus:
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `targetResource` | `TargetResource` | Tag filter passed through to `DailyCloudWatchLogsArchiver`. |
+
+### `TargetResource`
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `key` | `string` | Tag key to filter log groups (e.g. `"DailyLogExport"`, `"Environment"`). |
-| `values` | `string[]` | Tag values to match; log groups with any of these values are included (e.g. `['Yes']`). |
+| `tagKey` | `string` | Tag key used for discovery (e.g. `"DailyLogExport"`, `"Environment"`). |
+| `tagValues` | `string[]` | Tag values to match; log groups with any of these values are included (e.g. `['Yes']`). |
 
 ## Requirements
 
 - **Node.js** >= 20.0.0
 - **AWS CDK** (peer): `aws-cdk-lib` ^2.232.0
-- **Constructs** (peer): `constructs` ^10.0.5
+- **Constructs** (peer): `constructs` ^10.5.1
 
 ## One-off or custom exports
 
