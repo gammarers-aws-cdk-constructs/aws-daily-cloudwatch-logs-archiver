@@ -166,7 +166,7 @@ new DailyCloudWatchLogsArchiveStack(scope: Construct, id: string, props: DailyCl
 | --- | --- | --- |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | - Parent construct (e.g. App). |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.Initializer.parameter.id">id</a></code> | <code>string</code> | - Stack ID. |
-| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.Initializer.parameter.props">props</a></code> | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps">DailyCloudWatchLogsArchiveStackProps</a></code> | - Stack props including targetResourceTag for log group selection. |
+| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStack.Initializer.parameter.props">props</a></code> | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps">DailyCloudWatchLogsArchiveStackProps</a></code> | - Stack props including targetResource for log group selection. |
 
 ---
 
@@ -190,7 +190,7 @@ Stack ID.
 
 - *Type:* <a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps">DailyCloudWatchLogsArchiveStackProps</a>
 
-Stack props including targetResourceTag for log group selection.
+Stack props including targetResource for log group selection.
 
 ---
 
@@ -1125,17 +1125,17 @@ const dailyCloudWatchLogsArchiverProps: DailyCloudWatchLogsArchiverProps = { ...
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiverProps.property.targetResourceTag">targetResourceTag</a></code> | <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty">TargetResourceTagProperty</a></code> | Tag filter to identify which log groups to archive daily. |
+| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiverProps.property.targetResource">targetResource</a></code> | <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResource">TargetResource</a></code> | Tag filter to identify which log groups to archive daily. |
 
 ---
 
-##### `targetResourceTag`<sup>Required</sup> <a name="targetResourceTag" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiverProps.property.targetResourceTag"></a>
+##### `targetResource`<sup>Required</sup> <a name="targetResource" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiverProps.property.targetResource"></a>
 
 ```typescript
-public readonly targetResourceTag: TargetResourceTagProperty;
+public readonly targetResource: TargetResource;
 ```
 
-- *Type:* <a href="#aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty">TargetResourceTagProperty</a>
+- *Type:* <a href="#aws-daily-cloudwatch-logs-archiver.TargetResource">TargetResource</a>
 
 Tag filter to identify which log groups to archive daily.
 
@@ -1171,7 +1171,7 @@ const dailyCloudWatchLogsArchiveStackProps: DailyCloudWatchLogsArchiveStackProps
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps.property.synthesizer">synthesizer</a></code> | <code>aws-cdk-lib.IStackSynthesizer</code> | Synthesis method to use while deploying this stack. |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps.property.tags">tags</a></code> | <code>{[ key: string ]: string}</code> | Tags that will be applied to the Stack. |
 | <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps.property.terminationProtection">terminationProtection</a></code> | <code>boolean</code> | Whether to enable termination protection for this stack. |
-| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps.property.targetResourceTag">targetResourceTag</a></code> | <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty">TargetResourceTagProperty</a></code> | Tag key and values used to select CloudWatch Log groups for daily archiving. |
+| <code><a href="#aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps.property.targetResource">targetResource</a></code> | <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResource">TargetResource</a></code> | Tag key and values used to select CloudWatch Log groups for daily archiving. |
 
 ---
 
@@ -1419,62 +1419,62 @@ Whether to enable termination protection for this stack.
 
 ---
 
-##### `targetResourceTag`<sup>Required</sup> <a name="targetResourceTag" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps.property.targetResourceTag"></a>
+##### `targetResource`<sup>Required</sup> <a name="targetResource" id="aws-daily-cloudwatch-logs-archiver.DailyCloudWatchLogsArchiveStackProps.property.targetResource"></a>
 
 ```typescript
-public readonly targetResourceTag: TargetResourceTagProperty;
+public readonly targetResource: TargetResource;
 ```
 
-- *Type:* <a href="#aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty">TargetResourceTagProperty</a>
+- *Type:* <a href="#aws-daily-cloudwatch-logs-archiver.TargetResource">TargetResource</a>
 
 Tag key and values used to select CloudWatch Log groups for daily archiving.
 
 ---
 
-### TargetResourceTagProperty <a name="TargetResourceTagProperty" id="aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty"></a>
+### TargetResource <a name="TargetResource" id="aws-daily-cloudwatch-logs-archiver.TargetResource"></a>
 
 Tag filter used to select CloudWatch Log groups for archiving.
 
 Log groups matching the given tag key and any of the values will be archived.
 
-#### Initializer <a name="Initializer" id="aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty.Initializer"></a>
+#### Initializer <a name="Initializer" id="aws-daily-cloudwatch-logs-archiver.TargetResource.Initializer"></a>
 
 ```typescript
-import { TargetResourceTagProperty } from 'aws-daily-cloudwatch-logs-archiver'
+import { TargetResource } from 'aws-daily-cloudwatch-logs-archiver'
 
-const targetResourceTagProperty: TargetResourceTagProperty = { ... }
+const targetResource: TargetResource = { ... }
 ```
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty.property.key">key</a></code> | <code>string</code> | Tag key to filter log groups (e.g. "Environment", "Project"). |
-| <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty.property.values">values</a></code> | <code>string[]</code> | Tag values to match (log groups with any of these values are included). |
+| <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResource.property.tagKey">tagKey</a></code> | <code>string</code> | Tag key used for resource discovery. |
+| <code><a href="#aws-daily-cloudwatch-logs-archiver.TargetResource.property.tagValues">tagValues</a></code> | <code>string[]</code> | Tag values matched by the scheduler target query. |
 
 ---
 
-##### `key`<sup>Required</sup> <a name="key" id="aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty.property.key"></a>
+##### `tagKey`<sup>Required</sup> <a name="tagKey" id="aws-daily-cloudwatch-logs-archiver.TargetResource.property.tagKey"></a>
 
 ```typescript
-public readonly key: string;
+public readonly tagKey: string;
 ```
 
 - *Type:* string
 
-Tag key to filter log groups (e.g. "Environment", "Project").
+Tag key used for resource discovery.
 
 ---
 
-##### `values`<sup>Required</sup> <a name="values" id="aws-daily-cloudwatch-logs-archiver.TargetResourceTagProperty.property.values"></a>
+##### `tagValues`<sup>Required</sup> <a name="tagValues" id="aws-daily-cloudwatch-logs-archiver.TargetResource.property.tagValues"></a>
 
 ```typescript
-public readonly values: string[];
+public readonly tagValues: string[];
 ```
 
 - *Type:* string[]
 
-Tag values to match (log groups with any of these values are included).
+Tag values matched by the scheduler target query.
 
 ---
 
